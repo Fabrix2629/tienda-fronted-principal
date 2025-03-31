@@ -22,7 +22,6 @@ export class AuthService {
         tap((res) => {
           if (res.token) {
             this.setToken(res.token);
-            console.log('Token guardado:', res.token);
           }
         })
       );
@@ -42,7 +41,6 @@ export class AuthService {
   private setToken(token: string): void {
     if (this.isLocalStorageAvailable()) {
       localStorage.setItem(this.tokenKey, token);
-    } else {
     }
   }
 

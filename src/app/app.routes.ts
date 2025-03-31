@@ -8,7 +8,6 @@ export const routes: Routes = [
     redirectTo: 'login',
     pathMatch: 'full',
   },
-
   {
     path: '',
     loadComponent: () => import('./shared/components/layout/layout.component'),
@@ -22,11 +21,26 @@ export const routes: Routes = [
         path: 'tables',
         loadComponent: () => import('./business/tables/tables.component'),
         canActivate: [authGuard],
-      },
-      {
-        path: '',
-        redirectTo: 'dashboard',
-        pathMatch: 'full',
+        children: [
+          {
+            path: 'categorias',
+            loadComponent: () =>
+              import('./business/tables/categorias/categorias.component'),
+            canActivate: [authGuard],
+          },
+          {
+            path: 'productos',
+            loadComponent: () =>
+              import('./business/tables/productos/productos.component'),
+            canActivate: [authGuard],
+          },
+          {
+            path: 'usuarios',
+            loadComponent: () =>
+              import('./business/tables/usuarios/usuarios.component'),
+            canActivate: [authGuard],
+          },
+        ],
       },
     ],
   },
@@ -36,7 +50,6 @@ export const routes: Routes = [
       import('./business/authentication/login/login.component'),
     canActivate: [authenticateGuard],
   },
-
   {
     path: '**',
     redirectTo: 'login',
