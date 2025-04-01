@@ -2,7 +2,7 @@ import { Categoria } from './Categoria';
 
 export class Productos {
   constructor(
-    public idProducto: number | null = null,
+    public id: number | null = null,
     public nombre: number | null = null,
     public descripcion: number | null = null,
     public precio: number | null = null,

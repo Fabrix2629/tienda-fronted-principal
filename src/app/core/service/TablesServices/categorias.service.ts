@@ -2,18 +2,22 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Categoria } from '../../../shared/models/Categoria';
+import { AuthService } from '../auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CategoriasService {
-  private apiUrl =
+  private readonly apiUrl =
     'http://localhost:8080/api/v1/backend-principal-tienda/categorias';
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(
+    private readonly http: HttpClient,
+    private readonly authService: AuthService
+  ) {}
 
   getCategorias(): Observable<Categoria[]> {
-    return this.http.get<Categoria[]>(`${this.apiUrl}`);
+    return this.http.get<Categoria[]>(`${this.apiUrl}/findAll`);
   }
 
   getCategoria(id: number): Observable<Categoria> {
@@ -28,10 +32,7 @@ export class CategoriasService {
     return this.http.put<Categoria>(`${this.apiUrl}/${id}`, categoria);
   }
 
-  deleteCategoria(id: number, withProducts: boolean = false): Observable<void> {
-    const url = withProducts
-      ? `${this.apiUrl}/${id}/with-products`
-      : `${this.apiUrl}/${id}`;
-    return this.http.delete<void>(url);
+  deleteCategoria(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

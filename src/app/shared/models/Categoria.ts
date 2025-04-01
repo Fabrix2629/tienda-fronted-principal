@@ -1,7 +1,7 @@
 export class Categoria {
   constructor(
-    public idCategoria: number | null = null,
-    public nombre: number | null = null,
-    public descripcion: number | null = null
+    public id: number | null = null,
+    public nombre: string | null = null,
+    public descripcion: string | null = null
   ) {}
 }

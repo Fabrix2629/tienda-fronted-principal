@@ -8,12 +8,14 @@ import { Usuario } from '../../../shared/models/Usuarios';
 @Component({
   selector: 'app-usuarios',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, FormsModule],
   templateUrl: './usuarios.component.html',
   styleUrls: ['./usuarios.component.scss'],
 })
 export default class UsuariosComponent implements OnInit {
   usuarios: Usuario[] = [];
+  usuariosOriginales: Usuario[] = [];
+  terminoBusqueda: string = '';
   usuarioSeleccionado: Usuario = {
     id: null,
     nombre: '',
@@ -31,7 +33,10 @@ export default class UsuariosComponent implements OnInit {
 
   cargarUsuarios(): void {
     this.usuariosService.getUsuarios().subscribe({
-      next: (data) => (this.usuarios = data),
+      next: (data) => {
+        this.usuarios = data;
+        this.usuariosOriginales = [...data];
+      },
       error: (err) => console.error('Error al cargar usuarios', err),
     });
   }
@@ -71,11 +76,26 @@ export default class UsuariosComponent implements OnInit {
   }
 
   eliminarUsuario(id: number): void {
-    if (confirm('¿Estás seguro de eliminar este usuario?')) {
+    if (confirm('¿Está seguro de eliminar este usuario?')) {
       this.usuariosService.deleteUsuario(id).subscribe({
         next: () => this.cargarUsuarios(),
         error: (err) => console.error('Error al eliminar usuario', err),
       });
     }
+  }
+
+  filtrarUsuarios(): void {
+    if (!this.terminoBusqueda) {
+      this.usuarios = [...this.usuariosOriginales];
+      return;
+    }
+
+    const termino = this.terminoBusqueda.toLowerCase();
+    this.usuarios = this.usuariosOriginales.filter(
+      (usuario) =>
+        usuario.nombre?.toLowerCase().includes(termino) ||
+        usuario.usuario?.toLowerCase().includes(termino) ||
+        usuario.id?.toString().includes(termino)
+    );
   }
 }
