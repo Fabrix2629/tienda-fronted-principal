@@ -1,0 +1,81 @@
+<!-- dialogo-registrar-modificar-usuario.component.html -->
+<div
+  class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center p-4 z-50"
+>
+  <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden">
+    <!-- Encabezado -->
+    <div class="bg-indigo-600 px-6 py-4">
+      <h2 class="text-xl font-bold text-white">{{ accion }} Usuario</h2>
+    </div>
+
+    <!-- Cuerpo del formulario -->
+    <div class="p-6 space-y-5">
+      <form [formGroup]="usuarioForm" class="space-y-4">
+        <!-- Campo Nombre -->
+        <div>
+          <label
+            for="nombre"
+            class="block text-sm font-medium text-gray-700 mb-1"
+            >Nombre completo</label
+          >
+          <input
+            id="nombre"
+            type="text"
+            formControlName="nombre"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+            placeholder="Ej: Juan Pérez"
+          />
+        </div>
+
+        <!-- Campo Usuario -->
+        <div>
+          <label
+            for="usuario"
+            class="block text-sm font-medium text-gray-700 mb-1"
+            >Nombre de usuario</label
+          >
+          <input
+            id="usuario"
+            type="text"
+            formControlName="usuario"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+            placeholder="Ej: juan.perez"
+          />
+        </div>
+
+        <!-- Campo Contraseña -->
+        <div>
+          <label
+            for="clave"
+            class="block text-sm font-medium text-gray-700 mb-1"
+            >Contraseña</label
+          >
+          <input
+            id="clave"
+            type="password"
+            formControlName="clave"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+            placeholder="••••••••"
+            [required]="accion === 'Registrar'"
+          />
+        </div>
+      </form>
+    </div>
+
+    <!-- Pie de página - Botones -->
+    <div class="bg-gray-50 px-6 py-4 flex justify-end space-x-3">
+      <button
+        mat-dialog-close
+        class="px-5 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all"
+      >
+        Cancelar
+      </button>
+      <button
+        (click)="guardar()"
+        class="px-4 py-2 border border-gray-300 rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all"
+      >
+        {{ accion === "Registrar" ? "Registrar" : "Modificar" }}
+      </button>
+    </div>
+  </div>
+</div>

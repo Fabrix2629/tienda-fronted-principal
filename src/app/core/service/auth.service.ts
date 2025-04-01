@@ -1,15 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import {
-  Observable,
-  BehaviorSubject,
-  catchError,
-  map,
-  of,
-  tap,
-  throwError,
-} from 'rxjs';
+import { Observable, BehaviorSubject, catchError, map, of, tap } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
 
 interface JwtPayload {
@@ -48,7 +40,6 @@ export class AuthService {
       this.storage = localStorage;
     } catch (e) {
       this.storage = null;
-      console.warn('LocalStorage no disponible, usando memoria temporal');
     }
   }
 
@@ -57,11 +48,7 @@ export class AuthService {
       .post<{ token: string }>(this.LOGIN_URL, { username, password })
       .pipe(
         tap(({ token }) => this.setToken(token)),
-        map(() => true),
-        catchError((error) => {
-          console.error('Login error:', error);
-          return throwError(() => new Error('Credenciales inválidas'));
-        })
+        map(() => true)
       );
   }
 

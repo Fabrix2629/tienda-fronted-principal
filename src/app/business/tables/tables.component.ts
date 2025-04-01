@@ -13,7 +13,7 @@ import { filter } from 'rxjs';
 export default class TablesComponent implements OnInit {
   showButtons = true;
 
-  constructor(private router: Router) {}
+  constructor(private readonly router: Router) {}
 
   ngOnInit(): void {
     this.checkCurrentRoute();
