@@ -1,71 +1,140 @@
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, tap } from 'rxjs';
+import {
+  Observable,
+  BehaviorSubject,
+  catchError,
+  map,
+  of,
+  tap,
+  throwError,
+} from 'rxjs';
+import { jwtDecode } from 'jwt-decode';
+
+interface JwtPayload {
+  sub?: string;
+  exp?: number;
+  iat?: number;
+  authorities?: string[];
+  [key: string]: any;
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
+  private readonly httpClient = inject(HttpClient);
+  private readonly router = inject(Router);
   private readonly LOGIN_URL = 'http://localhost:8080/auth/login';
   private readonly tokenKey = 'authToken';
+  private readonly REFRESH_URL = 'http://localhost:8080/auth/refresh';
+  private readonly tokenSubject = new BehaviorSubject<string | null>(
+    this.getToken()
+  );
+  private storage: Storage | null = null;
 
-  constructor(
-    private readonly httpClient: HttpClient,
-    private readonly router: Router
-  ) {}
+  public token$ = this.tokenSubject.asObservable();
 
-  login(user: string, password: string): Observable<any> {
-    return this.httpClient
-      .post<any>(this.LOGIN_URL, { username: user, password })
-      .pipe(
-        tap((res) => {
-          if (res.token) {
-            this.setToken(res.token);
-          }
-        })
-      );
+  constructor() {
+    this.initializeStorage();
   }
 
-  private isLocalStorageAvailable(): boolean {
+  private initializeStorage(): void {
     try {
       const testKey = '__test__';
       localStorage.setItem(testKey, testKey);
       localStorage.removeItem(testKey);
-      return true;
+      this.storage = localStorage;
     } catch (e) {
-      return false;
+      this.storage = null;
+      console.warn('LocalStorage no disponible, usando memoria temporal');
     }
+  }
+
+  login(username: string, password: string): Observable<boolean> {
+    return this.httpClient
+      .post<{ token: string }>(this.LOGIN_URL, { username, password })
+      .pipe(
+        tap(({ token }) => this.setToken(token)),
+        map(() => true),
+        catchError((error) => {
+          console.error('Login error:', error);
+          return throwError(() => new Error('Credenciales inválidas'));
+        })
+      );
   }
 
   private setToken(token: string): void {
-    if (this.isLocalStorageAvailable()) {
-      localStorage.setItem(this.tokenKey, token);
+    if (this.storage) {
+      this.storage.setItem(this.tokenKey, token);
     }
+    this.tokenSubject.next(token);
   }
 
-  private getToken(): string | null {
-    if (this.isLocalStorageAvailable()) {
-      return localStorage.getItem(this.tokenKey);
-    } else {
+  getToken(): string | null {
+    if (!this.storage) return null;
+    return this.storage.getItem(this.tokenKey);
+  }
+
+  getCurrentUser(): JwtPayload | null {
+    const token = this.getToken();
+    if (!token) return null;
+
+    try {
+      return jwtDecode<JwtPayload>(token);
+    } catch {
       return null;
     }
   }
+
   isAuthenticated(): boolean {
     const token = this.getToken();
-    if (!token) {
-      return false;
-    }
+    if (!token) return false;
+
     try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const exp = payload.exp * 1000;
-      return Date.now() < exp;
-    } catch (e) {
+      const { exp } = jwtDecode<JwtPayload>(token);
+      return !!exp && Date.now() < exp * 1000;
+    } catch {
       return false;
     }
   }
+
+  refreshToken(): Observable<string | null> {
+    const token = this.getToken();
+    if (!token) return of(null);
+
+    return this.httpClient
+      .post<{ token: string }>(this.REFRESH_URL, { token })
+      .pipe(
+        tap(({ token: newToken }) => this.setToken(newToken)),
+        map(({ token }) => token),
+        catchError(() => {
+          this.logout();
+          return of(null);
+        })
+      );
+  }
+
   logout(): void {
-    localStorage.removeItem(this.tokenKey);
-    this.router.navigate(['login']);
+    if (this.storage) {
+      this.storage.removeItem(this.tokenKey);
+    }
+    this.tokenSubject.next(null);
+    this.router.navigate(['/login']);
+  }
+
+  getAuthHeaders(): { [header: string]: string } {
+    const token = this.getToken();
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  }
+  getCurrentUserRoles(): string[] {
+    const user = this.getCurrentUser();
+    return user?.authorities || [];
+  }
+
+  hasRole(role: string): boolean {
+    const roles = this.getCurrentUserRoles();
+    return roles.includes(role);
   }
 }
