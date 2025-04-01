@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../core/service/auth.service';
 
 @Component({
@@ -13,7 +13,7 @@ export class SidebarComponent {
   user: string = '';
   password: string = '';
 
-  constructor(private _authService: AuthService, private router: Router) {}
+  constructor(private readonly _authService: AuthService) {}
 
   logout(): void {
     this._authService.logout();
