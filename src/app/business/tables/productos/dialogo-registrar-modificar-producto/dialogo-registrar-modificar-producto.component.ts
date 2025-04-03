@@ -65,15 +65,22 @@ export class DialogoRegistrarModificarProductoComponent implements OnInit {
 
     this.productoForm = this.fb.group({
       id: [producto.id],
-      nombre: [
-        producto.nombre,
+      nameProduct: [
+        producto.nameProduct,
         [Validators.required, Validators.maxLength(100)],
       ],
-      descripcion: [producto.descripcion],
-      precio: [producto.precio, [Validators.required, Validators.min(0)]],
-      stock: [producto.stock, [Validators.required, Validators.min(0)]],
-      categoria: this.fb.group({
-        id: [producto.categoria?.id, Validators.required],
+      codigoProducto: [producto.codigoProducto],
+      descriptionProduct: [producto.descriptionProduct],
+      priceProduct: [
+        producto.priceProduct,
+        [Validators.required, Validators.min(0)],
+      ],
+      stockProduct: [
+        producto.stockProduct,
+        [Validators.required, Validators.min(0)],
+      ],
+      categoryProduct: this.fb.group({
+        id: [producto.categoryProduct?.id, Validators.required],
       }),
     });
   }

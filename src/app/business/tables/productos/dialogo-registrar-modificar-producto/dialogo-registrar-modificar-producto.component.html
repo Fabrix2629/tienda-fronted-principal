@@ -21,7 +21,7 @@
           <input
             id="nombre"
             type="text"
-            formControlName="nombre"
+            formControlName="nameProduct"
             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
             placeholder="Nombre del producto"
           />
@@ -37,7 +37,7 @@
           <input
             id="descripcion"
             type="text"
-            formControlName="descripcion"
+            formControlName="descriptionProduct"
             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
             placeholder="Descripción del producto"
           />
@@ -53,7 +53,7 @@
           <input
             id="precio"
             type="number"
-            formControlName="precio"
+            formControlName="priceProduct"
             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
             placeholder="0.00"
             min="0"
@@ -71,7 +71,7 @@
           <input
             id="stock"
             type="number"
-            formControlName="stock"
+            formControlName="stockProduct"
             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
             placeholder="0"
             min="0"
@@ -94,7 +94,7 @@
               Seleccione una categoría
             </option>
             <option *ngFor="let categoria of categorias" [value]="categoria.id">
-              {{ categoria.nombre }}
+              {{ categoria.nameCategory }}
             </option>
           </select>
         </div>

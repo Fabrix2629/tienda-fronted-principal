@@ -21,7 +21,7 @@
           <input
             id="nombre"
             type="text"
-            formControlName="nombre"
+            formControlName="nameCategory"
             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
             placeholder="Ej: Electrónica"
           />
@@ -37,7 +37,7 @@
           <input
             id="descripcion"
             type="text"
-            formControlName="descripcion"
+            formControlName="descriptionCategory"
             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
             placeholder="Descripción opcional"
           />
@@ -54,10 +54,8 @@
         Cancelar
       </button>
       <button
-        mat-raised-button
-        color="primary"
         (click)="guardar()"
-        class="px-4 py-2 border border-gray-300 rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all"
+        class="px-4 py-2 border border-gray-300 rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all disabled:bg-indigo-300 disabled:cursor-not-allowed"
       >
         {{ accion === "Registrar" ? "Registrar" : "Modificar" }}
       </button>

@@ -44,6 +44,7 @@
     <table class="min-w-full bg-white">
       <thead class="bg-gray-100">
         <tr>
+          <th class="py-3 px-4 text-left">Codigo</th>
           <th class="py-3 px-4 text-left">Nombre</th>
           <th class="py-3 px-4 text-left">Usuario</th>
           <th class="py-3 px-4 text-left">Acciones</th>
@@ -51,6 +52,7 @@
       </thead>
       <tbody class="divide-y divide-gray-200">
         <tr *ngFor="let usuario of usuarios" class="hover:bg-gray-50">
+          <td class="py-3 px-4">{{ usuario.codigo }}</td>
           <td class="py-3 px-4">{{ usuario.nombre }}</td>
           <td class="py-3 px-4">{{ usuario.usuario }}</td>
           <td class="py-3 px-4">

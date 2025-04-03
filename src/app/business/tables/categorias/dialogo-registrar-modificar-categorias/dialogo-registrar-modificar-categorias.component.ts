@@ -50,16 +50,19 @@ export class DialogoRegistrarModificarCategoriaComponent implements OnInit {
 
   inicializarFormulario(): void {
     this.categoriaForm = this.fb.group({
-      id: [this.accion === 'Modificar' ? this.data.categoria.id : null],
-      nombre: [this.data.categoria?.nombre ?? '', Validators.required],
-      descripcion: [this.data.categoria?.descripcion ?? ''],
+      id: [this.data.categoria?.id ?? null],
+      nameCategory: [
+        this.data.categoria?.nameCategory ?? '',
+        Validators.required,
+      ],
+      descriptionCategory: [this.data.categoria?.descriptionCategory ?? ''],
     });
   }
 
   guardar(): void {
+    console.log(this.categoriaForm.valid);
     if (this.categoriaForm.valid) {
       const categoria = this.categoriaForm.value;
-
       if (this.accion === 'Registrar') {
         delete categoria.id;
       }

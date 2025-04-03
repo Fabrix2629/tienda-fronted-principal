@@ -44,6 +44,7 @@
     <table class="min-w-full bg-white">
       <thead class="bg-gray-100">
         <tr>
+          <th class="py-3 px-4 text-left">Codigo</th>
           <th class="py-3 px-4 text-left">Nombre</th>
           <th class="py-3 px-4 text-left">Descripción</th>
           <th class="py-3 px-4 text-left">Precio</th>
@@ -54,11 +55,14 @@
       </thead>
       <tbody class="divide-y divide-gray-200">
         <tr *ngFor="let producto of productos" class="hover:bg-gray-50">
-          <td class="py-3 px-4">{{ producto.nombre }}</td>
-          <td class="py-3 px-4">{{ producto.descripcion || "-" }}</td>
-          <td class="py-3 px-4">{{ producto.precio | currency }}</td>
-          <td class="py-3 px-4">{{ producto.stock }}</td>
-          <td class="py-3 px-4">{{ producto.categoria?.nombre }}</td>
+          <td class="py-3 px-4">{{ producto.codigoProducto }}</td>
+          <td class="py-3 px-4">{{ producto.nameProduct }}</td>
+          <td class="py-3 px-4">{{ producto.descriptionProduct || "-" }}</td>
+          <td class="py-3 px-4">{{ producto.priceProduct | currency }}</td>
+          <td class="py-3 px-4">{{ producto.stockProduct }}</td>
+          <td class="py-3 px-4">
+            {{ producto.categoryProduct?.nameCategory }}
+          </td>
           <td class="py-3 px-4">
             <div class="flex space-x-2">
               <button

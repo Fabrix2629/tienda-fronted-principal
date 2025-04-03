@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, BehaviorSubject, catchError, map, of, tap } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
@@ -18,9 +18,9 @@ interface JwtPayload {
 export class AuthService {
   private readonly httpClient = inject(HttpClient);
   private readonly router = inject(Router);
-  private readonly LOGIN_URL = 'http://localhost:8080/auth/login';
   private readonly tokenKey = 'authToken';
-  private readonly REFRESH_URL = 'http://localhost:8080/auth/refresh';
+  private readonly REFRESH_URL =
+    'http://localhost:8080/api/v1/backend-principal-tienda/auth/refresh';
   private readonly tokenSubject = new BehaviorSubject<string | null>(
     this.getToken()
   );
@@ -45,7 +45,15 @@ export class AuthService {
 
   login(username: string, password: string): Observable<boolean> {
     return this.httpClient
-      .post<{ token: string }>(this.LOGIN_URL, { username, password })
+      .post<{ token: string }>(
+        'http://localhost:8080/api/v1/backend-principal-tienda/auth/login',
+        { username, password },
+        {
+          headers: new HttpHeaders({
+            'Content-Type': 'application/json',
+          }),
+        }
+      )
       .pipe(
         tap(({ token }) => this.setToken(token)),
         map(() => true)

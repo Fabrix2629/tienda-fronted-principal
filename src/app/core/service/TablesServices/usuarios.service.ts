@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Usuario } from '../../../shared/models/Usuarios';
-import { AuthService } from '../auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -11,10 +10,7 @@ export class UsuariosService {
   private readonly apiUrl =
     'http://localhost:8080/api/v1/backend-principal-tienda/usuarios';
 
-  constructor(
-    private readonly http: HttpClient,
-    private readonly authService: AuthService
-  ) {}
+  constructor(private readonly http: HttpClient) {}
 
   getUsuarios(): Observable<Usuario[]> {
     return this.http.get<Usuario[]>(`${this.apiUrl}/findAll`);

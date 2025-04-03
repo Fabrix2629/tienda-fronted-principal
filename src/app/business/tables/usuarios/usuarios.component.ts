@@ -50,7 +50,6 @@ export default class UsuariosComponent implements OnInit {
       if (nuevoUsuario) {
         this.usuariosService.createUsuario(nuevoUsuario).subscribe({
           next: () => this.cargarUsuarios(),
-          error: (err) => console.error('Error al crear usuario', err),
         });
       }
     });

@@ -1,4 +1,3 @@
-<!-- categorias.component.html -->
 <div class="container mx-auto p-4">
   <div
     class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4"
@@ -47,6 +46,7 @@
     <table class="min-w-full bg-white">
       <thead class="bg-gray-100">
         <tr>
+          <th class="py-3 px-4 text-left">Codigo</th>
           <th class="py-3 px-4 text-left">Nombre</th>
           <th class="py-3 px-4 text-left">Descripción</th>
           <th class="py-3 px-4 text-left">Acciones</th>
@@ -54,8 +54,9 @@
       </thead>
       <tbody class="divide-y divide-gray-200">
         <tr *ngFor="let categoria of categorias" class="hover:bg-gray-50">
-          <td class="py-3 px-4">{{ categoria.nombre }}</td>
-          <td class="py-3 px-4">{{ categoria.descripcion || "-" }}</td>
+          <td class="py-3 px-4">{{ categoria.codigoCategory }}</td>
+          <td class="py-3 px-4">{{ categoria.nameCategory }}</td>
+          <td class="py-3 px-4">{{ categoria.descriptionCategory || "-" }}</td>
           <td class="py-3 px-4">
             <div class="flex space-x-2">
               <button

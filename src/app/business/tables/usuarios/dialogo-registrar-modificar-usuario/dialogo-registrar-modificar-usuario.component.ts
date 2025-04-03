@@ -62,7 +62,6 @@ export class DialogoRegistrarModificarUsuarioComponent implements OnInit {
   guardar(): void {
     if (this.usuarioForm.valid) {
       const usuario = this.usuarioForm.value;
-
       if (this.accion === 'Registrar') {
         delete usuario.id;
       }

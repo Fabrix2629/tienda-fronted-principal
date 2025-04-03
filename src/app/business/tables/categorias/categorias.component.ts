@@ -92,8 +92,9 @@ export default class CategoriasComponent implements OnInit {
     const termino = this.terminoBusqueda.toLowerCase();
     this.categorias = this.categoriasOriginales.filter(
       (categoria) =>
-        categoria.nombre?.toLowerCase().includes(termino) ||
-        categoria.descripcion?.toLowerCase().includes(termino) ||
+        categoria.descriptionCategory?.toLowerCase().includes(termino) ||
+        categoria.nameCategory?.toLowerCase().includes(termino) ||
+        categoria.codigoCategory?.toLowerCase().includes(termino) ||
         categoria.id?.toString().includes(termino)
     );
   }

@@ -11,7 +11,7 @@ import { ProductosService } from '../../../core/service/TablesServices/producto.
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './productos.component.html',
-  styleUrls: ['./productos.component.scss'],
+  styleUrl: './productos.component.scss',
 })
 export default class ProductosComponent implements OnInit {
   productos: Productos[] = [];
@@ -99,10 +99,16 @@ export default class ProductosComponent implements OnInit {
     const termino = this.terminoBusqueda.toLowerCase();
     this.productos = this.productosOriginales.filter(
       (producto) =>
-        producto.nombre?.toString().toLowerCase().includes(termino) ||
-        producto.descripcion?.toString().toLowerCase().includes(termino) ||
         producto.id?.toString().includes(termino) ||
-        producto.categoria?.nombre?.toLowerCase().includes(termino)
+        producto.codigoProducto?.toString().toLowerCase().includes(termino) ||
+        producto.nameProduct?.toString().toLowerCase().includes(termino) ||
+        producto.descriptionProduct
+          ?.toString()
+          .toLowerCase()
+          .includes(termino) ||
+        producto.priceProduct?.toString().toLowerCase().includes(termino) ||
+        producto.stockProduct?.toString().toLowerCase().includes(termino) ||
+        producto.categoryProduct?.nameCategory?.toLowerCase().includes(termino)
     );
   }
 }
