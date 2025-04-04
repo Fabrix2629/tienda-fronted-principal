@@ -64,58 +64,29 @@ export class DialogoRegistrarModificarUsuarioComponent implements OnInit {
   //-------MANEJO DE FORMULARIO----------------
   //-----------------------------------------
   // Métodos para navegación
-  focusNextField(nextField: ElementRef<HTMLInputElement> | null): void {
-    if (nextField) {
-      nextField.nativeElement.focus();
-    }
+  focusNextField(nextField: HTMLInputElement): void {
+    nextField.focus();
   }
-  focusPreviousField(prevField: ElementRef<HTMLInputElement> | null): void {
-    if (prevField) {
-      prevField.nativeElement.focus();
-    }
+
+  focusPreviousField(prevField: HTMLInputElement): void {
+    prevField.focus();
   }
-  // Modifica guardar() para evitar envío con Enter
   @HostListener('document:keydown.enter', ['$event'])
   onEnterPress(event: KeyboardEvent): void {
     if (
       event.target instanceof HTMLInputElement &&
       event.target.id !== 'clave'
     ) {
-      event.preventDefault(); // Evita envío accidental
+      event.preventDefault();
     }
   }
 
-  onNombreKeydown(event: KeyboardEvent): void {
-    if (event.key === 'Enter' || event.key === 'ArrowDown') {
-      event.preventDefault();
-      this.focusNextField(this.usuarioInput);
-    }
-  }
-  onUsuarioKeydown(event: KeyboardEvent): void {
-    if (event.key === 'Enter' || event.key === 'ArrowDown') {
-      event.preventDefault();
-      this.focusNextField(this.claveInput);
-    } else if (event.key === 'ArrowUp') {
-      event.preventDefault();
-      this.focusPreviousField(this.nombreInput);
-    }
-  }
-
-  onClaveKeydown(event: KeyboardEvent): void {
-    if (event.key === 'ArrowUp') {
-      event.preventDefault();
-      this.focusPreviousField(this.usuarioInput);
-    } else if (event.key === 'Enter') {
-      this.guardar();
-    }
-  }
   //-----------------------------------------
   //-------MANEJO DE FORMULARIO----------------
   //-----------------------------------------
-
   inicializarFormulario(): void {
     this.usuarioForm = this.fb.group({
-      id: [this.accion === 'Modificar' ? this.data.usuario.id : null],
+      id: [this.data.usuario?.id ?? null],
       nombre: [
         this.data.usuario?.nombre ?? '',
         [Validators.required, Validators.minLength(3)],
@@ -124,15 +95,14 @@ export class DialogoRegistrarModificarUsuarioComponent implements OnInit {
         this.data.usuario?.usuario ?? '',
         [
           Validators.required,
-          Validators.pattern(/^[a-zA-Z0-9_]+$/),
+          Validators.pattern(/^\S+$/),
           Validators.minLength(4),
+          Validators.maxLength(20),
         ],
       ],
       clave: [
         this.data.usuario?.clave ?? '',
-        this.accion === 'Registrar'
-          ? [Validators.required, Validators.minLength(6)]
-          : [],
+        [Validators.required, Validators.minLength(6)],
       ],
     });
   }
@@ -149,8 +119,8 @@ export class DialogoRegistrarModificarUsuarioComponent implements OnInit {
     this.estaProcesando = true;
     this.mensaje =
       this.accion === 'Registrar'
-        ? '✅ Usuario registrado correctamente'
-        : '✅ Usuario modificado correctamente';
+        ? '✅ Usuario registrado correctamente! Redirigiendo...'
+        : '✅ Usuario modificado correctamente! Redirigiendo...';
     this.esExito = true;
 
     setTimeout(() => {

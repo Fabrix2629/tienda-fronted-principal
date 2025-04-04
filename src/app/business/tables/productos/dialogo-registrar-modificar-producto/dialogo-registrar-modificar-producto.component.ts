@@ -1,4 +1,10 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -35,10 +41,18 @@ import { CategoriasService } from '../../../../core/service/TablesServices/categ
   styleUrl: './dialogo-registrar-modificar-producto.component.scss',
 })
 export class DialogoRegistrarModificarProductoComponent implements OnInit {
+  @ViewChild('nombreInput') nombreInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('descripcionInput')
+  descripcionInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('precioInput') precioInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('stockInput') stockInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('categoriaSelect') categoriaSelect!: ElementRef<HTMLSelectElement>;
   productoForm!: FormGroup;
   accion: 'Registrar' | 'Modificar';
   categorias: Categoria[] = [];
-
+  mensaje: string = '';
+  esExito: boolean = false;
+  estaProcesando: boolean = false;
   constructor(
     private readonly fb: FormBuilder,
     private readonly categoriasService: CategoriasService,
@@ -59,49 +73,84 @@ export class DialogoRegistrarModificarProductoComponent implements OnInit {
       this.categorias = data;
     });
   }
-
+  focusNextField(
+    nextField:
+      | HTMLInputElement
+      | HTMLSelectElement
+      | HTMLTextAreaElement
+      | HTMLElement
+  ): void {
+    nextField.focus();
+  }
+  focusPreviousField(prevField: HTMLInputElement | HTMLSelectElement): void {
+    prevField.focus();
+  }
+  // Bloqueo de números en nombre
+  filtrarCaracteres(event: KeyboardEvent): void {
+    if (/[0-9]/.test(event.key)) {
+      event.preventDefault();
+    }
+  }
   inicializarFormulario(): void {
-    const producto = this.data.producto || new Productos();
-
     this.productoForm = this.fb.group({
-      id: [producto.id],
+      id: [this.data.producto?.id ?? null],
       nameProduct: [
-        producto.nameProduct,
-        [Validators.required, Validators.maxLength(100)],
+        this.data.producto?.nameProduct ?? '',
+        [
+          Validators.required,
+          Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/),
+          Validators.maxLength(100),
+        ],
       ],
-      codigoProducto: [producto.codigoProducto],
-      descriptionProduct: [producto.descriptionProduct],
+      descriptionProduct: [
+        this.data.producto?.descriptionProduct ?? '',
+        [Validators.required, Validators.minLength(10)],
+      ],
       priceProduct: [
-        producto.priceProduct,
-        [Validators.required, Validators.min(0)],
+        this.data.producto?.priceProduct ?? null,
+        [Validators.required, Validators.min(0.01)],
       ],
       stockProduct: [
-        producto.stockProduct,
+        this.data.producto?.stockProduct ?? null,
         [Validators.required, Validators.min(0)],
       ],
       categoryProduct: this.fb.group({
-        id: [producto.categoryProduct?.id, Validators.required],
+        id: [
+          this.data.producto?.categoryProduct?.id ?? null,
+          Validators.required,
+        ],
       }),
     });
   }
 
   guardar(): void {
-    if (this.productoForm.valid) {
-      const formValue = {
+    this.productoForm.markAllAsTouched();
+
+    if (this.productoForm.invalid) {
+      this.mensaje = 'Por favor complete todos los campos correctamente';
+      this.esExito = false;
+      return;
+    }
+
+    this.estaProcesando = true;
+    this.mensaje = `✅ Producto ${
+      this.accion === 'Registrar' ? 'registrado' : 'modificado'
+    } correctamente! ${this.accion === 'Registrar' ? 'Redirigiendo...' : ''}`;
+    this.esExito = true;
+
+    setTimeout(() => {
+      const formData = {
         ...this.productoForm.value,
-        idCategoria: Number(this.productoForm.value.categoria.id),
-        categoria: undefined,
+        idCategory: Number(this.productoForm.value.categoryProduct.id),
       };
 
+      delete formData.categoryProduct;
       if (this.accion === 'Registrar') {
-        delete formValue.id;
+        delete formData.id;
       }
 
-      if (!formValue.idCategoria) {
-        return;
-      }
-
-      this.dialogRef.close(formValue);
-    }
+      this.dialogRef.close(formData);
+      this.estaProcesando = false;
+    }, 2000);
   }
 }

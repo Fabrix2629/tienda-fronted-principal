@@ -11,36 +11,127 @@
     <!-- Cuerpo del formulario -->
     <div class="p-6 space-y-5">
       <form [formGroup]="categoriaForm" class="space-y-4">
+        <div
+          *ngIf="mensaje"
+          [class]="
+            esExito
+              ? 'mb-4 p-4 bg-green-100 border-l-4 border-green-500 text-green-700 rounded-lg'
+              : 'mb-4 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 rounded-lg'
+          "
+        >
+          <div class="flex items-center">
+            <svg
+              *ngIf="esExito"
+              class="w-5 h-5 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 13l4 4L19 7"
+              ></path>
+            </svg>
+            <svg
+              *ngIf="!esExito"
+              class="w-5 h-5 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              ></path>
+            </svg>
+            <span>{{ mensaje }}</span>
+          </div>
+        </div>
         <!-- Campo Nombre -->
-        <div>
+        <div class="mb-4">
           <label
             for="nombre"
             class="block text-sm font-medium text-gray-700 mb-1"
-            >Nombre</label
           >
+            Nombre <span class="text-red-500">*</span>
+          </label>
           <input
+            #nombreInput
             id="nombre"
             type="text"
             formControlName="nameCategory"
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
-            placeholder="Ej: Electrónica"
+            (keydown.enter)="focusNextField(descripcionInput)"
+            [class.border-red-500]="
+              categoriaForm.get('nameCategory')?.invalid &&
+              categoriaForm.get('nameCategory')?.touched
+            "
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+            placeholder="Ej: Electronica"
           />
+          <div
+            *ngIf="
+              categoriaForm.get('nameCategory')?.touched &&
+              categoriaForm.get('nameCategory')?.invalid
+            "
+            class="text-red-500 text-xs mt-1"
+          >
+            <p *ngIf="categoriaForm.get('nameCategory')?.errors?.['required']">
+              Campo obligatorio
+            </p>
+            <p *ngIf="categoriaForm.get('nameCategory')?.errors?.['pattern']">
+              Solo se permiten letras (sin números ni caracteres especiales)
+            </p>
+            <p *ngIf="categoriaForm.get('nameCategory')?.errors?.['minlength']">
+              Mínimo 3 caracteres
+            </p>
+          </div>
         </div>
 
         <!-- Campo Descripción -->
-        <div>
+        <div class="mb-4">
           <label
             for="descripcion"
             class="block text-sm font-medium text-gray-700 mb-1"
-            >Descripción</label
           >
+            Descripción <span class="text-red-500">*</span>
+            <!-- Asterisco rojo -->
+          </label>
           <input
+            #descripcionInput
             id="descripcion"
             type="text"
             formControlName="descriptionCategory"
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
-            placeholder="Descripción opcional"
+            (keydown.enter)="guardar()"
+            (keydown.arrowup)="focusPreviousField(nombreInput)"
+            [class.border-red-500]="
+              categoriaForm.get('descriptionCategory')?.invalid &&
+              categoriaForm.get('descriptionCategory')?.touched
+            "
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+            placeholder="Ej: Productos electrónicos y accesorios"
           />
+          <div
+            *ngIf="
+              categoriaForm.get('descriptionCategory')?.touched &&
+              categoriaForm.get('descriptionCategory')?.invalid
+            "
+            class="text-red-500 text-xs mt-1"
+          >
+            <p
+              *ngIf="categoriaForm.get('descriptionCategory')?.errors?.['required']"
+            >
+              Campo obligatorio
+            </p>
+            <p
+              *ngIf="categoriaForm.get('descriptionCategory')?.errors?.['minlength']"
+            >
+              Minimo 1 oracion
+            </p>
+          </div>
         </div>
       </form>
     </div>
@@ -55,9 +146,16 @@
       </button>
       <button
         (click)="guardar()"
-        class="px-4 py-2 border border-gray-300 rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all disabled:bg-indigo-300 disabled:cursor-not-allowed"
+        [disabled]="categoriaForm.invalid || estaProcesando"
+        class="px-4 py-2 border rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {{ accion === "Registrar" ? "Registrar" : "Modificar" }}
+        {{
+          estaProcesando
+            ? "Procesando..."
+            : accion === "Registrar"
+            ? "Registrar"
+            : "Modificar"
+        }}
       </button>
     </div>
   </div>

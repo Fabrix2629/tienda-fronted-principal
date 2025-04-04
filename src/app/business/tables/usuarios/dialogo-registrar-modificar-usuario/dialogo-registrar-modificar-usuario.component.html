@@ -29,9 +29,10 @@
             >Nombre completo</label
           >
           <input
-            id="nombre"
+            #nombreInput
             type="text"
-            (keydown)="onNombreKeydown($event)"
+            (keydown.enter)="focusNextField(usuarioinput)"
+            (keydown.arrowdown)="focusNextField(usuarioinput)"
             formControlName="nombre"
             class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
             [class.border-red-500]="
@@ -59,9 +60,10 @@
             >Nombre de usuario</label
           >
           <input
-            id="usuario"
+            #usuarioinput
             type="text"
-            (keydown)="onUsuarioKeydown($event)"
+            (keydown.enter)="focusNextField(claveInput)"
+            (keydown.arrowdown)="focusNextField(claveInput)"
             formControlName="usuario"
             class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
             [class.border-red-500]="
@@ -97,22 +99,23 @@
             >Contraseña</label
           >
           <input
-            id="clave"
+            #claveInput
             type="password"
             formControlName="clave"
-            (keydown)="onClaveKeydown($event)"
+            (keydown.enter)="guardar()"
+            (keydown.enter)="focusNextField(claveInput)"
+            (keydown.arrowdown)="focusNextField(nombreInput)"
             class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
             [class.border-red-500]="
               usuarioForm.get('clave')?.invalid &&
               usuarioForm.get('clave')?.touched
             "
             placeholder="••••••••"
-            [required]="accion === 'Registrar'"
           />
           <div
             *ngIf="
               usuarioForm.get('clave')?.touched &&
-              usuarioForm.get('clave')?.errors
+              usuarioForm.get('clave')?.invalid
             "
             class="text-red-500 text-xs mt-1"
           >
