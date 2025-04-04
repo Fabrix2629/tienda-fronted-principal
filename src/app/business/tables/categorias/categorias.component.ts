@@ -11,7 +11,7 @@ import { DialogoRegistrarModificarCategoriaComponent } from './dialogo-registrar
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './categorias.component.html',
-  styleUrls: ['./categorias.component.scss'],
+  styleUrl: './categorias.component.scss',
 })
 export default class CategoriasComponent implements OnInit {
   categorias: Categoria[] = [];

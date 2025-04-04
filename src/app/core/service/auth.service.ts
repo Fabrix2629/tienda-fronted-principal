@@ -1,7 +1,19 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpHeaders,
+} from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, BehaviorSubject, catchError, map, of, tap } from 'rxjs';
+import {
+  Observable,
+  BehaviorSubject,
+  catchError,
+  map,
+  of,
+  tap,
+  throwError,
+} from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
 
 interface JwtPayload {
@@ -21,6 +33,8 @@ export class AuthService {
   private readonly tokenKey = 'authToken';
   private readonly REFRESH_URL =
     'http://localhost:8080/api/v1/backend-principal-tienda/auth/refresh';
+  private readonly API_URL =
+    'http://localhost:8080/api/v1/backend-principal-tienda/auth';
   private readonly tokenSubject = new BehaviorSubject<string | null>(
     this.getToken()
   );
@@ -52,11 +66,17 @@ export class AuthService {
           headers: new HttpHeaders({
             'Content-Type': 'application/json',
           }),
+          observe: 'response',
         }
       )
       .pipe(
-        tap(({ token }) => this.setToken(token)),
-        map(() => true)
+        map((response) => {
+          this.setToken(response.body?.token ?? '');
+          return true;
+        }),
+        catchError((error: HttpErrorResponse) => {
+          return throwError(() => error);
+        })
       );
   }
 

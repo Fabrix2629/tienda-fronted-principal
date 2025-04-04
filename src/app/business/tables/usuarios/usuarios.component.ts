@@ -49,7 +49,9 @@ export default class UsuariosComponent implements OnInit {
     dialogRef.afterClosed().subscribe((nuevoUsuario: Usuario) => {
       if (nuevoUsuario) {
         this.usuariosService.createUsuario(nuevoUsuario).subscribe({
-          next: () => this.cargarUsuarios(),
+          next: () => {
+            this.cargarUsuarios();
+          },
         });
       }
     });

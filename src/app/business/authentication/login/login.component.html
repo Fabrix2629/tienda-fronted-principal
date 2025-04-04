@@ -73,15 +73,58 @@
             </svg>
           </button>
         </div>
-
+        <!-- Mensaje de estado -->
+        <div
+          *ngIf="errorMessage"
+          [class]="
+            isSuccessMessage
+              ? 'bg-green-100 border-green-500 text-green-700'
+              : 'bg-red-100 border-red-500 text-red-700'
+          "
+          class="mb-4 p-4 border-l-4 rounded-lg"
+        >
+          <div class="flex items-center">
+            <svg
+              *ngIf="isSuccessMessage"
+              class="w-5 h-5 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 13l4 4L19 7"
+              ></path>
+            </svg>
+            <svg
+              *ngIf="!isSuccessMessage"
+              class="w-5 h-5 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              ></path>
+            </svg>
+            <span>{{ errorMessage }}</span>
+          </div>
+        </div>
         <!-- BOTON INCIO DE SESION -->
         <div>
           <button
             (click)="login()"
             type="submit"
-            class="w-full flex justify-center bg-purple-800 hover:bg-purple-700 text-gray-100 p-3 rounded-lg tracking-wide font-semibold cursor-pointer transition ease-in duration-500"
+            [disabled]="isLoading"
+            class="w-full flex justify-center bg-purple-800 hover:bg-purple-700 text-gray-100 p-3 rounded-lg tracking-wide font-semibold cursor-pointer transition ease-in duration-500 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Inicio de sesión
+            <span *ngIf="!isLoading">Inicio de sesión</span>
+            <span *ngIf="isLoading">Cargando...</span>
           </button>
         </div>
 

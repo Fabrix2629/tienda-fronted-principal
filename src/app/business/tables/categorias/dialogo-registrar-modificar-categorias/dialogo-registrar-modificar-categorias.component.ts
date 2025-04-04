@@ -60,7 +60,6 @@ export class DialogoRegistrarModificarCategoriaComponent implements OnInit {
   }
 
   guardar(): void {
-    console.log(this.categoriaForm.valid);
     if (this.categoriaForm.valid) {
       const categoria = this.categoriaForm.value;
       if (this.accion === 'Registrar') {

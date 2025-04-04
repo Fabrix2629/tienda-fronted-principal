@@ -1,4 +1,3 @@
-<!-- dialogo-registrar-modificar-usuario.component.html -->
 <div
   class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center p-4 z-50"
 >
@@ -10,7 +9,18 @@
 
     <!-- Cuerpo del formulario -->
     <div class="p-6 space-y-5">
-      <form [formGroup]="usuarioForm" class="space-y-4">
+      <form [formGroup]="usuarioForm" (keydown.enter)="$event.preventDefault()">
+        <div
+          *ngIf="mensaje"
+          [class]="
+            esExito
+              ? 'bg-green-100 border-green-500 text-green-700'
+              : 'bg-red-100 border-red-500 text-red-700'
+          "
+          class="mb-4 p-4 border-l-4 rounded-lg"
+        >
+          {{ mensaje }}
+        </div>
         <!-- Campo Nombre -->
         <div>
           <label
@@ -21,10 +31,24 @@
           <input
             id="nombre"
             type="text"
+            (keydown)="onNombreKeydown($event)"
             formControlName="nombre"
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+            [class.border-red-500]="
+              usuarioForm.get('nombre')?.invalid &&
+              usuarioForm.get('nombre')?.touched
+            "
             placeholder="Ej: Juan Pérez"
           />
+          <small
+            *ngIf="
+              usuarioForm.get('nombre')?.invalid &&
+              usuarioForm.get('nombre')?.touched
+            "
+            class="text-red-500 text-xs"
+          >
+            Campo obligatorio
+          </small>
         </div>
 
         <!-- Campo Usuario -->
@@ -37,10 +61,32 @@
           <input
             id="usuario"
             type="text"
+            (keydown)="onUsuarioKeydown($event)"
             formControlName="usuario"
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
-            placeholder="Ej: juan.perez"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+            [class.border-red-500]="
+              usuarioForm.get('usuario')?.invalid &&
+              usuarioForm.get('usuario')?.touched
+            "
+            placeholder="Ej: juan_perez123"
           />
+          <div
+            *ngIf="
+              usuarioForm.get('usuario')?.touched &&
+              usuarioForm.get('usuario')?.errors
+            "
+            class="text-red-500 text-xs mt-1"
+          >
+            <p *ngIf="usuarioForm.get('usuario')?.errors?.['required']">
+              Campo obligatorio
+            </p>
+            <p *ngIf="usuarioForm.get('usuario')?.errors?.['pattern']">
+              Solo se permiten letras, números y _
+            </p>
+            <p *ngIf="usuarioForm.get('usuario')?.errors?.['minlength']">
+              Mínimo 4 caracteres
+            </p>
+          </div>
         </div>
 
         <!-- Campo Contraseña -->
@@ -54,10 +100,29 @@
             id="clave"
             type="password"
             formControlName="clave"
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+            (keydown)="onClaveKeydown($event)"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+            [class.border-red-500]="
+              usuarioForm.get('clave')?.invalid &&
+              usuarioForm.get('clave')?.touched
+            "
             placeholder="••••••••"
             [required]="accion === 'Registrar'"
           />
+          <div
+            *ngIf="
+              usuarioForm.get('clave')?.touched &&
+              usuarioForm.get('clave')?.errors
+            "
+            class="text-red-500 text-xs mt-1"
+          >
+            <p *ngIf="usuarioForm.get('clave')?.errors?.['required']">
+              Campo obligatorio
+            </p>
+            <p *ngIf="usuarioForm.get('clave')?.errors?.['minlength']">
+              Mínimo 6 caracteres
+            </p>
+          </div>
         </div>
       </form>
     </div>
@@ -72,9 +137,16 @@
       </button>
       <button
         (click)="guardar()"
-        class="px-4 py-2 border border-gray-300 rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all"
+        [disabled]="usuarioForm.invalid || estaProcesando"
+        class="px-4 py-2 border rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {{ accion === "Registrar" ? "Registrar" : "Modificar" }}
+        {{
+          estaProcesando
+            ? "Procesando..."
+            : accion === "Registrar"
+            ? "Registrar"
+            : "Modificar"
+        }}
       </button>
     </div>
   </div>

@@ -20,7 +20,8 @@ export default class LoginComponent {
     user: false,
     password: false,
   };
-
+  isSuccessMessage: boolean = false;
+  errorMessage: string | null = null;
   @ViewChild('usernameInput') usernameInput!: ElementRef<HTMLInputElement>;
   @ViewChild('passwordInput') passwordInput!: ElementRef<HTMLInputElement>;
 
@@ -57,14 +58,30 @@ export default class LoginComponent {
     }
 
     this.isLoading = true;
+    this.errorMessage = null;
+    this.isSuccessMessage = false;
 
     this._authService.login(this.user, this.password).subscribe({
       next: () => {
         this.isLoading = false;
-        this.router.navigate(['/dashboard']);
+        this.isSuccessMessage = true;
+        this.errorMessage = '¡Login exitoso! Ingresando al Dashboard...';
+
+        setTimeout(() => {
+          this.router.navigate(['/dashboard']);
+        }, 3000);
       },
       error: (err) => {
         this.isLoading = false;
+        this.isSuccessMessage = false;
+        if (err.status === 401) {
+          this.errorMessage = 'Contraseña incorrecta';
+        } else if (err.status === 404) {
+          this.errorMessage = 'Usuario no registrado';
+        } else {
+          this.errorMessage =
+            'Error al iniciar sesión. Por favor intente nuevamente.';
+        }
       },
     });
   }
